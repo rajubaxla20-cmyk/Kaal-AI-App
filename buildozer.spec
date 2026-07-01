@@ -11,5 +11,6 @@ orientation = portrait
 fullscreen = 0
 android.archs = arm64-v8a, armeabi-v7a
 android.allow_backup = True
-android.accept_sdk_license = 1
+android.accept_sdk_license = True
 android.api = 31
+android.ndk = 25b
