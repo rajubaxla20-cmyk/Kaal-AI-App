@@ -1,3 +1,4 @@
+
 name: Build Kaal AI APK
 on:
   push:
@@ -24,8 +25,13 @@ jobs:
           pip install "buildozer==1.5.0" "cython<3.0.0" virtualenv
       - name: Build with Buildozer
         run: |
+          # Automatically find the existing NDK on the GitHub runner
+          AVAILABLE_NDK=$(ls -d /usr/local/lib/android/sdk/ndk/* | head -n 1)
+          export ANDROID_NDK_HOME=$AVAILABLE_NDK
+          export ANDROID_HOME=/usr/local/lib/android/sdk
           export BUILDOZER_WARN_ON_ROOT=0
+          
+          # Force buildozer to accept licenses automatically via config
+          sed -i 's/# android.accept_sdk_license = False/android.accept_sdk_license = True/g' buildozer.spec || true
+          
           buildozer -v android debug
-        env:
-          ANDROID_HOME: /usr/local/lib/android/sdk
-          ANDROID_NDK_HOME: /usr/local/lib/android/sdk/ndk/25.2.9519653
