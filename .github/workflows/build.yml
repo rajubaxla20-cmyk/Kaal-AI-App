@@ -22,11 +22,19 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install "buildozer==1.5.0" "cython<3.0.0" virtualenv
+      - name: Auto Accept Android Licenses
+        run: |
+          mkdir -p ~/.android
+          touch ~/.android/repositories.cfg
+          yes | tsdk_path=$(find /usr/local/lib/android/sdk/tools/bin/sdkmanager 2>/dev/null || find /opt/android -name sdkmanager | head -n 1)
+          if [ -n "$tsdk_path" ]; then
+            yes | $tsdk_path --licenses || true
+          fi
       - name: Build with Buildozer
-        run: buildozer -v android debug
+        run: |
+          buildozer -v android debug
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Kaal-AI-App-APK
           path: bin/*.apk
-          
